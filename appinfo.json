@@ -1,12 +1,12 @@
 {
   "uuid": "0fe6c3ce-635f-4d84-a2c6-fee03fd5b340",
-  "shortName": "hackcwru",
-  "longName": "hackcwru",
-  "companyName": "MakeAwesomeHappen",
-  "versionLabel": "1.0",
+  "shortName": "HackCWRU",
+  "longName": "The Best Watchface.",
+  "companyName": "Nicholas Marino",
+  "versionLabel": "0.6",
   "sdkVersion": "3",
   "targetPlatforms": ["chalk"],
-  "enableMultiJS": true,
+  "enableMultiJS": false,
   "watchapp": {
     "watchface": true
   },

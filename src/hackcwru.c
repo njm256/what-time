@@ -7,7 +7,6 @@
 static Window *window;
 static TextLayer *text_layer;
 
-
 const char *hour_int_to_str(int hour) {
     const char *str = NULL;
     switch(hour) {
@@ -140,13 +139,13 @@ void gen_msg(char *buf, size_t buf_len, struct tm *tick_time) {
         strncat(tmp_buf, hour_int_to_str(hour % 12 + 1), buf_len - 1);
 
         strncpy(my_buf, "\nNearly ", buf_len - 1);
-        strncat(my_buf, hour_int_to_str(hour), buf_len - 1);
+        strncat(my_buf, hour_int_to_str(hour % 12 + 1), buf_len - 1);
     }
 
     msgs[NUM_MSGS - 2] = &tmp_buf[0];
     msgs[NUM_MSGS - 1] = &my_buf[0];
     memset(buf, 0, buf_len);
-    strncpy(buf, msgs[(rand() % NUM_MSGS)/2 + (rand() % NUM_MSGS)/2], buf_len);
+    strncpy(buf, rand() % 2 ? msgs[NUM_MSGS - 2] : msgs[rand() % NUM_MSGS], buf_len);
 
     srand(time(NULL));
     
@@ -163,8 +162,12 @@ static void update_time() {
     gen_msg(buf, sizeof(buf), tick_time);
 
     text_layer_set_text(text_layer, buf);
-
 }
+
+static void tap_handler(AccelAxisType axis, int32_t direction) {
+    update_time();
+}
+
 
 static void main_window_load(Window *window) {
     Layer *window_layer = window_get_root_layer(window);
@@ -202,11 +205,15 @@ static void init() {
     tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
 
     window_stack_push(window, true);
+
+    accel_tap_service_subscribe(tap_handler);
     update_time();
 }
 
 static void deinit() {
     window_destroy(window);
+
+    accel_tap_service_unsubscribe();
 }
 
 int main(void) {
