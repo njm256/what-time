@@ -1,4 +1,8 @@
 #include <pebble.h>
+#include <string.h>
+#include <stdlib.h>
+
+#define NUM_MSGS 5
 
 static Window *window;
 static TextLayer *text_layer;
@@ -47,46 +51,65 @@ const char *hour_int_to_str(int hour) {
     }
     return str;
 }
-void gen_msg(const char *buf, size_t buf_len, int hour, int min) {
+
+int hours_military_to_reg(int hour) {
+    if (hour % 12 == 0) {
+        return 12;
+    }
+    return hour % 12;
+}
+
+void gen_msg(char *buf, size_t buf_len, int hour, int min) {
+    char *msgs[NUM_MSGS] = {
+        "\nI don't know.",
+        "\nWhy are you asking me?",
+        "\nTime to get a watch."
+    };
+    
+    char tmp_buf[buf_len] = {0};
+
     if (min >= 0 && min <= 10) {
-        strncpy(buf, "It's ", 63); 
-        strncat(buf, hour_int_to_str(hour), 63);
+        strncpy(tmp_buf, "\nIt's ", buf_len - 1); 
+        strncat(tmp_buf, hour_int_to_str(hour), buf_len - 1);
     }
     else if (min > 10 && min <= 20) {
-        str = "It's a quarter after.";
-        strncpy(buf, "It's a quarter after.", 63);
+        strncpy(tmp_buf, "\nIt's a quarter after.", buf_len - 1);
     }
     else if (min >= 20 && min <= 27) {
-        strncpy(buf, "It's almost half past ", 63);
-        strncat(buf, hour_int_to_str(hour), 63);
+        strncpy(tmp_buf, "\nIt's almost half past ", buf_len - 1);
+        strncat(tmp_buf, hour_int_to_str(hour), buf_len - 1);
     }
     else if (min >= 28 && min <=32) {
-        strncpy(buf, "It's half past ", 63);
-        strncat(buf, hour_int_to_str(hour), 63);
+        strncpy(tmp_buf, "\nIt's half past ", buf_len - 1);
+        strncat(tmp_buf, hour_int_to_str(hour), buf_len - 1);
     }
     else if (min >= 33 && min <= 39) {
-        strncpy(buf, "It's ", 63);
-        strncat(buf, hour_int_to_str(hour), 63);
-        strncat(buf, " thirty-something.", 63);
+        strncpy(tmp_buf, "\nIt's ", buf_len - 1);
+        strncat(tmp_buf, hour_int_to_str(hour), buf_len - 1);
+        strncat(tmp_buf, " thirty-something.", buf_len - 1);
     }
-    else if (min >= 40 & min <= 50) {
-        strncpy(buf, "It's a quarter to ", 63);
-        strncat(buf, hour_int_to_str(hour % 12 + 1), 63);
+    else if (min >= 40 && min <= 50) {
+        strncpy(tmp_buf, "\nIt's a quarter to ", buf_len - 1);
+        strncat(tmp_buf, hour_int_to_str(hour % 12 + 1), buf_len - 1);
     }
     else {
-        strncpy(buf, "It's almost ", 63);
-        strncat(buf, hour_int_to_str(hour % 12 + 1), 63);
+        strncpy(tmp_buf, "\nIt's almost ", buf_len - 1);
+        strncat(tmp_buf, hour_int_to_str(hour % 12 + 1), buf_len - 1);
     }
+
+    msgs[3] = &tmp_buf[0];
 }
 
 static void update_time() {
     time_t temp = time(NULL);
     struct tm *tick_time = localtime(&temp);
 
-    static char buf[64];
+    static char buf[64] = {0};
     strftime(buf, sizeof(buf), "\n%I:%M", tick_time);
     int hour, min;
-    sscanf(buf, "\n%d:%d", &hour, &min);
+    //sscanf(buf, "\n%d:%d", &hour, &min);
+    hour = hours_military_to_reg(tick_time->tm_hour);
+    min = tick_time->tm_min;
     gen_msg(buf, sizeof(buf), hour, min);
 
     text_layer_set_text(text_layer, buf);
