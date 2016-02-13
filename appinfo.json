@@ -1,0 +1,19 @@
+{
+  "uuid": "0fe6c3ce-635f-4d84-a2c6-fee03fd5b340",
+  "shortName": "hackcwru",
+  "longName": "hackcwru",
+  "companyName": "MakeAwesomeHappen",
+  "versionLabel": "1.0",
+  "sdkVersion": "3",
+  "targetPlatforms": ["aplite", "basalt", "chalk"],
+  "enableMultiJS": true,
+  "watchapp": {
+    "watchface": false
+  },
+  "appKeys": {
+    "dummy": 0
+  },
+  "resources": {
+    "media": []
+  }
+}
