@@ -7,6 +7,7 @@
 static Window *window;
 static TextLayer *text_layer;
 
+
 const char *hour_int_to_str(int hour) {
     const char *str = NULL;
     switch(hour) {
@@ -59,45 +60,98 @@ int hours_military_to_reg(int hour) {
     return hour % 12;
 }
 
-void gen_msg(char *buf, size_t buf_len, int hour, int min) {
-    char *msgs[NUM_MSGS] = {
+void gen_msg(char *buf, size_t buf_len, struct tm *tick_time) {
+    int hour, min;
+    hour = hours_military_to_reg(tick_time->tm_hour);
+    min = tick_time->tm_min;
+
+    const char *msgs[NUM_MSGS] = {
         "\nI don't know.",
-        "\nWhy are you asking me?",
+        "\nTuesday?",
         "\nTime to get a watch."
     };
     
-    char tmp_buf[buf_len] = {0};
+    char tmp_buf[64] = {0};
+    char my_buf[64] = {0};
 
     if (min >= 0 && min <= 10) {
         strncpy(tmp_buf, "\nIt's ", buf_len - 1); 
         strncat(tmp_buf, hour_int_to_str(hour), buf_len - 1);
+
+        strncpy(my_buf, "\nIt's ", buf_len - 1);
+        strncat(my_buf, hour_int_to_str(hour), buf_len - 1);
+        strncat(my_buf, "-ish", buf_len - 1);
     }
     else if (min > 10 && min <= 20) {
         strncpy(tmp_buf, "\nIt's a quarter after.", buf_len - 1);
+
+        if (min < 16) {
+            strncpy(my_buf, "\nCheck your phone.", buf_len - 1);
+        } else {
+            strncpy(my_buf, "\nIt's ", buf_len - 1);
+            strncat(my_buf, hour_int_to_str(hour), buf_len - 1);
+            strncat(my_buf, ", like, eighteen?", buf_len - 1);
+        }
     }
     else if (min >= 20 && min <= 27) {
         strncpy(tmp_buf, "\nIt's almost half past ", buf_len - 1);
         strncat(tmp_buf, hour_int_to_str(hour), buf_len - 1);
+
+        if (min < 24) {
+            strncpy(my_buf, "\nTwenty after.", buf_len - 1);
+        } else {
+            strncpy(my_buf, "\nIt's ", buf_len - 1);
+            strncat(my_buf, hour_int_to_str(hour), buf_len - 1);
+            strncat(my_buf, " twenty-five. I think. Wait.", buf_len - 1);
+        }
     }
     else if (min >= 28 && min <=32) {
         strncpy(tmp_buf, "\nIt's half past ", buf_len - 1);
         strncat(tmp_buf, hour_int_to_str(hour), buf_len - 1);
+        
+        strncpy(my_buf, "\nIt's ", buf_len - 1);
+        strncat(my_buf, hour_int_to_str(hour), buf_len - 1);
+        strncat(my_buf, " fifteen.", buf_len - 1);
     }
     else if (min >= 33 && min <= 39) {
         strncpy(tmp_buf, "\nIt's ", buf_len - 1);
         strncat(tmp_buf, hour_int_to_str(hour), buf_len - 1);
         strncat(tmp_buf, " thirty-something.", buf_len - 1);
+
+        strncpy(my_buf, "\nIt's not quite ", buf_len - 1);
+        strncat(my_buf, hour_int_to_str(hour), buf_len - 1);
+        strncat(my_buf, " forty", buf_len - 1);
+        if (min > 35) {
+            strncat(my_buf, ", but my watch is fast.", buf_len - 1);
+        } else {
+            strncat(my_buf, ".", buf_len - 1);
+        }
+
     }
     else if (min >= 40 && min <= 50) {
         strncpy(tmp_buf, "\nIt's a quarter to ", buf_len - 1);
         strncat(tmp_buf, hour_int_to_str(hour % 12 + 1), buf_len - 1);
+
+        strncpy(my_buf, "\nIt's like, the big hand's on the nine? \
+            It's near the nine.", buf_len -1);
     }
     else {
         strncpy(tmp_buf, "\nIt's almost ", buf_len - 1);
         strncat(tmp_buf, hour_int_to_str(hour % 12 + 1), buf_len - 1);
+
+        strncpy(my_buf, "\nNearly ", buf_len - 1);
+        strncat(my_buf, hour_int_to_str(hour), buf_len - 1);
     }
 
-    msgs[3] = &tmp_buf[0];
+    msgs[NUM_MSGS - 2] = &tmp_buf[0];
+    msgs[NUM_MSGS - 1] = &my_buf[0];
+    memset(buf, 0, buf_len);
+    strncpy(buf, msgs[(rand() % NUM_MSGS)/2 + (rand() % NUM_MSGS)/2], buf_len);
+
+    srand(time(NULL));
+    
+
+
 }
 
 static void update_time() {
@@ -106,11 +160,7 @@ static void update_time() {
 
     static char buf[64] = {0};
     strftime(buf, sizeof(buf), "\n%I:%M", tick_time);
-    int hour, min;
-    //sscanf(buf, "\n%d:%d", &hour, &min);
-    hour = hours_military_to_reg(tick_time->tm_hour);
-    min = tick_time->tm_min;
-    gen_msg(buf, sizeof(buf), hour, min);
+    gen_msg(buf, sizeof(buf), tick_time);
 
     text_layer_set_text(text_layer, buf);
 
