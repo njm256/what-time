@@ -66,7 +66,7 @@ void gen_msg(char *buf, size_t buf_len, struct tm *tick_time) {
 
     const char *msgs[NUM_MSGS] = {
         "\nI don't know.",
-        "\nTuesday?",
+        "\nDoes it matter?",
         "\nTime to get a watch."
     };
     
