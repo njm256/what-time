@@ -99,7 +99,7 @@ void gen_msg(char *buf, size_t buf_len, struct tm *tick_time) {
         if (min < 24) {
             strncpy(my_buf, "\nTwenty after.", buf_len - 1);
         } else {
-            strncpy(my_buf, "\nIt's ", buf_len - 1);
+            strncpy(my_buf, "It's ", buf_len - 1);
             strncat(my_buf, hour_int_to_str(hour), buf_len - 1);
             strncat(my_buf, " twenty-five. I think. Wait.", buf_len - 1);
         }
@@ -186,6 +186,10 @@ static void main_window_load(Window *window) {
     text_layer_set_text_alignment(text_layer, GTextAlignmentCenter);
 
     layer_add_child(window_layer, text_layer_get_layer(text_layer));
+
+#if defined(PBL_ROUND)
+    text_layer_enable_screen_text_flow_and_paging(text_layer, 2);
+#endif
 }
 
 static void main_window_unload(Window *window) {

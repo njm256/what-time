@@ -5,7 +5,7 @@
   "companyName": "Nicholas Marino",
   "versionLabel": "0.6",
   "sdkVersion": "3",
-  "targetPlatforms": ["chalk"],
+  "targetPlatforms": ["aplite", "basalt", "chalk"],
   "enableMultiJS": false,
   "watchapp": {
     "watchface": true
