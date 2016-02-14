@@ -143,6 +143,13 @@ void gen_msg(char *buf, size_t buf_len, struct tm *tick_time) {
         strncat(my_buf, hour_int_to_str(hour % 12 + 1), buf_len - 1);
     }
 
+    if (hour == 4) {
+        strncpy(my_buf, "\nIt's the long dark teatime of the soul.", buf_len - 1);
+    }
+    if (tick_time->tm_hour >= 19) {
+        strncpy(my_buf, "\nTime for bed.", buf_len - 1);
+    }
+
     msgs[NUM_MSGS - 2] = &tmp_buf[0];
     msgs[NUM_MSGS - 1] = &my_buf[0];
     memset(buf, 0, buf_len);
