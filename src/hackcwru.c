@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define NUM_MSGS 5
+#define NUM_MSGS 6
 
 static Window *window;
 static TextLayer *text_layer;
@@ -67,7 +67,8 @@ void gen_msg(char *buf, size_t buf_len, struct tm *tick_time) {
     const char *msgs[NUM_MSGS] = {
         "\nI don't know.",
         "\nDoes it matter?",
-        "\nTime to get a watch."
+        "\nTime to get a watch.",
+        "\nTime is an illusion. Lunchtime doubly so."
     };
     
     char tmp_buf[64] = {0};
