@@ -114,7 +114,7 @@ void gen_msg(char *buf, size_t buf_len, struct tm *tick_time) {
         strncat(my_buf, " fifteen.", buf_len - 1);
     }
     else if (min >= 33 && min <= 39) {
-        strncpy(tmp_buf, "\nIt's ", buf_len - 1);
+        strncpy(tmp_buf, "It's ", buf_len - 1);
         strncat(tmp_buf, hour_int_to_str(hour), buf_len - 1);
         strncat(tmp_buf, " thirty-something.", buf_len - 1);
 
@@ -153,7 +153,7 @@ void gen_msg(char *buf, size_t buf_len, struct tm *tick_time) {
     msgs[NUM_MSGS - 2] = &tmp_buf[0];
     msgs[NUM_MSGS - 1] = &my_buf[0];
     memset(buf, 0, buf_len);
-    strncpy(buf, rand() % 2 ? msgs[NUM_MSGS - 2] : msgs[rand() % NUM_MSGS], buf_len);
+    strncpy(buf, rand() % 3 ? msgs[NUM_MSGS - 2] : msgs[rand() % NUM_MSGS], buf_len);
 
     srand(time(NULL));
     
