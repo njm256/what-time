@@ -144,7 +144,7 @@ void gen_msg(char *buf, size_t buf_len, struct tm *tick_time) {
     }
 
     if (hour == 4) {
-        strncpy(my_buf, "\nIt's the long dark teatime of the soul.", buf_len - 1);
+        strncpy(my_buf, "It's the long dark teatime of the soul.", buf_len - 1);
     }
     if (tick_time->tm_hour >= 19) {
         strncpy(my_buf, "\nTime for bed.", buf_len - 1);
