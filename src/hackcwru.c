@@ -68,7 +68,7 @@ void gen_msg(char *buf, size_t buf_len, struct tm *tick_time) {
         "\nI don't know.",
         "\nDoes it matter?",
         "\nTime to get a watch.",
-        "\nTime is an illusion. Lunchtime doubly so."
+        "Time is an illusion. Lunchtime doubly so."
     };
     
     char tmp_buf[64] = {0};
